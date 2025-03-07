@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Utilisateurs</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .user-list-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            text-align: left;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .user-list-container ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .user-list-container li {
+            padding: 15px;
+            margin: 5px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .user-list-container li:hover {
+            background-color: #ecf0f1;
+            border-color: #3498db;
+        }
+
+        .user-list-container a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .user-list-container a:hover {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>Utilisateurs</h1>
+    <div class="user-list-container">
+		<div th:if="${#lists.isEmpty(users)}" class="no-users">
+			Aucune conversation à consulter
+		</div>
+        <ul th:if="${not #lists.isEmpty(users)}">
+            <li th:each="user : ${users}">
+                <a th:href="@{/conversations/{username}(username=${user})}" th:text="${user}"></a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

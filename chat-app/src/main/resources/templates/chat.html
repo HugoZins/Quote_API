@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Chat Motivant</title>
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			background-color: #f0f8ff;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+		}
+
+		h1 {
+			color: #2c3e50;
+			font-size: 2.5em;
+			margin-bottom: 20px;
+		}
+
+		.chat-container {
+			background-color: #ffffff;
+			padding: 20px;
+			border-radius: 10px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			width: 800px;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			height: 90vh; /* Fixe la hauteur de la chat-container */
+			position: relative;
+			overflow: hidden; /* Empêche la chat-container de scroller */
+		}
+
+		.conversation {
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			padding: 10px;
+			flex-grow: 1; /* Permet à la zone de conversation de grandir pour prendre tout l'espace disponible */
+			overflow-y: auto; /* Permet de scroller uniquement dans la zone de conversation */
+			display: flex;
+			flex-direction: column;
+			gap: 30px;
+			margin-bottom: 10px;
+		}
+
+		.message-pair {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.message {
+			padding: 12px 18px;
+			border-radius: 15px;
+			max-width: 70%;
+			word-wrap: break-word;
+			display: inline-block;
+			position: relative;
+			font-size: 0.9em;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
+		.user-message {
+			background-color: #3498db;
+			color: white;
+			align-self: flex-end;
+			border-bottom-right-radius: 0;
+			text-align: right;
+			margin-right: 10px;
+		}
+
+		.response-message {
+			background-color: #ecf0f1;
+			color: #333;
+			align-self: flex-start;
+			border-bottom-left-radius: 0;
+			text-align: left;
+			margin-left: 10px;
+		}
+
+		.user-message .timestamp {
+			color: white;
+			font-size: 0.7em;
+			margin-top: 5px;
+			display: block;
+			opacity: 0.8;
+		}
+
+		.timestamp {
+			font-size: 0.7em;
+			color: #7f8c8d;
+			margin-top: 5px;
+			display: block;
+			opacity: 0.8;
+		}
+
+		.form-author {
+			font-style: italic;
+			font-size: 0.9em;
+			margin-top: 5px;
+		}
+
+		form {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			width: 100%; /* Prenez toute la largeur de la chat-container */
+		}
+
+		input[type="text"] {
+			flex: 1;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 1em;
+			outline: none;
+			transition: border-color 0.3s;
+		}
+
+		input[type="text"]:focus {
+			border-color: #3498db;
+		}
+
+		button {
+			padding: 10px 15px;
+			background-color: #3498db;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			font-size: 1em;
+			cursor: pointer;
+			transition: background-color 0.3s;
+		}
+
+		button:hover {
+			background-color: #2980b9;
+		}
+
+		/* Bouton de déconnexion positionné en bas à droite de la page */
+		.logout-button-container {
+			position: fixed; /* Positionné par rapport à la fenêtre */
+			bottom: 20px; /* À 20px du bas */
+			right: 20px; /* À 20px de la droite */
+			z-index: 10; /* S'assurer qu'il soit au-dessus de la chat-container */
+		}
+	</style>
+</head>
+
+<body>
+	<div class="chat-container">
+		<h1>💬 Chat Motivant 🗨️</h1>
+
+		<!-- Zone de conversation -->
+		<div class="conversation" id="conversation">
+			<!-- Boucle Thymeleaf pour afficher chaque paire de messages -->
+			<div th:each="chatMessage : ${chatMessages}" class="message-pair">
+				<!-- Message de l'utilisateur -->
+				<div class="message user-message">
+					<span th:text="${chatMessage.message}"></span>
+					<span class="timestamp" th:text="${chatMessage.date}"></span>
+				</div>
+
+				<!-- Réponse de l'API si elle existe -->
+				<div th:if="${chatMessage.response != null}" class="message response-message">
+					<span th:text="${chatMessage.response}"></span>
+					<br>
+					<span th:if="${chatMessage.quoteAuthor != null}" class="form-author">
+						<i th:text="${chatMessage.quoteAuthor}"></i>
+					</span>
+
+					<span class="timestamp" th:text="${chatMessage.date}"></span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Formulaire d'envoi de message -->
+		<form method="post" action="/sendMessage">
+			<!-- Champ pour le nom d'utilisateur et le message -->
+			<input type="text" name="username" placeholder="Votre nom" th:value="${username}" readonly />
+			<input type="text" name="message" placeholder="Votre message" required />
+			<button type="submit">Envoyer</button>
+		</form>
+	</div>
+
+	<!-- Bouton de déconnexion positionné en bas à droite -->
+	<div class="logout-button-container">
+		<form action="/logout" method="post">
+			<button type="submit" style="background-color: #e74c3c; border-radius: 5px; color: white; padding: 10px 15px;">
+				Se déconnecter
+			</button>
+		</form>
+	</div>
+
+	<script>
+		// Scroll automatique vers le bas lors du chargement
+		window.onload = function () {
+			const conversationDiv = document.getElementById("conversation");
+			conversationDiv.scrollTop = conversationDiv.scrollHeight;
+		};
+	</script>
+</body>
+
+</html>

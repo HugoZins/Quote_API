@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversation de l'utilisateur</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .conversation-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 70%;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f7f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .message:hover {
+            background-color: #ecf0f1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .message strong {
+            color: #3498db;
+            font-size: 1.1em;
+        }
+
+        .message .date {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+
+        .message .response {
+            font-style: italic;
+            color: #95a5a6;
+            margin-top: 10px;
+        }
+
+        .message hr {
+            margin: 15px 0;
+            border: 0;
+            border-top: 1px solid #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Conversation de l'utilisateur</h1>
+    <div class="conversation-container">
+        <ul>
+            <li th:each="message : ${messages}" class="message">
+                <strong th:text="${message.username}"></strong> : <span th:text="${message.message}"></span>
+                <br>
+                <span class="response">Réponse : <span th:text="${message.response}"></span></span>
+                <div class="date">
+                    <small th:text="${message.date}"></small>
+                </div>
+                <hr>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

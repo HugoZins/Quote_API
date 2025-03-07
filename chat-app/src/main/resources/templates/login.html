@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - Chat Motivant</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 12px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .form-message {
+            margin-top: 10px;
+            color: #e74c3c;
+            font-size: 0.9em;
+        }
+
+        .register-link {
+            display: block;
+            margin-top: 15px;
+            font-size: 1em;
+        }
+
+        .register-link a {
+            text-decoration: none;
+            color: #3498db;
+        }
+
+        .register-link a:hover {
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Connexion - Chat Motivant</h1>
+		
+		<div th:if="${param.error}" class="form-message">
+		    Nom d'utilisateur ou mot de passe incorrect.
+		</div>
+
+        <form method="post" action="/login">
+            <!-- Champ pour le nom d'utilisateur -->
+            <input type="text" name="username" class="input-field" placeholder="Nom d'utilisateur" required />
+            
+            <!-- Champ pour le mot de passe -->
+            <input type="password" name="password" class="input-field" placeholder="Mot de passe" required />
+
+            <!-- Message d'erreur s'il y en a -->
+            <div th:if="${errorMessage}" class="form-message" th:text="${errorMessage}"></div>
+
+            <button type="submit">Se connecter</button>
+        </form>
+
+        <!-- Lien vers la page d'inscription -->
+        <div class="register-link">
+            <span>Vous n'avez pas de compte ?</span>
+            <a href="/register">Inscrivez-vous ici</a>
+        </div>
+    </div>
+</body>
+</html>
